@@ -2,38 +2,6 @@ version: 'V1.0.6'
 # Rolled back from v7 to v6 as requested by jade
 
 services:
-  saus:
-    image: next3pl.azurecr.io/saus:latest
-    ports: 
-        - 3381:3001
-    networks:
-      coreapp_subnet:
-        ipv4_address: 172.33.1.21
-    volumes:
-      - /volume1/docker/nextcoreapps:/sausconfig
-
-  smartpicker:
-    image: next3pl.azurecr.io/grouppickingapi:latest
-    ports: 
-        - 3380:80
-    networks:
-      coreapp_subnet:
-        ipv4_address: 172.33.1.22
-    volumes:
-      - /volume1/docker/smartpicker:/smartpickerconfig
-  
-  addresschecker:
-    image: next3pl.azurecr.io/addresschecker:latest
-    ports: 
-        - 3382:80
-    networks:
-      coreapp_subnet:
-        ipv4_address: 172.33.1.23
-    volumes:
-      - /volume1/docker/addresscheckerconfig:/addresscheckerconfig
-
-    environment:
-        - TZ=Australia/Sydney
 
 # Importer & Reporter
 
@@ -45,7 +13,7 @@ services:
       coreapp_subnet:
         ipv4_address: 172.33.1.24
     volumes:
-      - /volume1/docker/irconfig:/irconfig
+      - /pwdocker/irconfig:/irconfig
     environment:
     - SEND_FILE_TO_IMPORT_RABBITQ_CONN= amqp://172.33.1.27:5672    
     - HTTP= http://172.33.1.24:3001/api/ftp/fileImporter
@@ -59,7 +27,7 @@ services:
       coreapp_subnet:
         ipv4_address: 172.33.1.25
     volumes:
-      - /volume1/docker/irconfig:/irconfig
+      - /pwdocker/irconfig:/irconfig
     environment:
       - RECEIVE_FILE_TO_IMPORT_RABBITQ_CONN= amqp://172.33.1.27:5672
       - SEND_FILE_TO_CUSTOMERPORTAL_RABBITQ_CONN= amqp://172.33.1.27:5672
@@ -75,7 +43,7 @@ services:
       coreapp_subnet:
         ipv4_address: 172.33.1.26
     volumes:
-      - /volume1/docker/irconfig:/usr/share/nginx/html/assets/config
+      - /pwdocker/irconfig:/usr/share/nginx/html/assets/config
     environment:
         - TZ=Australia/Sydney
   
@@ -89,92 +57,6 @@ services:
         ipv4_address: 172.33.1.27
     environment:
         - TZ=Australia/Sydney
-
-
-
-#  fileimport:
-#    image: next3pl.azurecr.io/next3pl-ftp-importer:V1.0.1-ir
-#    ports: 
-#      - 3383:3001
-#    networks:
-#      coreapp_subnet:
-#        ipv4_address: 172.33.1.24
-#    volumes:
-#      - /volume1/docker/irconfig:/irconfig
-#   environment:
-#      - MSSQL_HOST='192.168.15.34'
-#      - MSSQL_DATABASE= 'n3pl_ftp_importer'
-#      - MSSQL_USERNAME= 'devsa'
-#      - MSSQL_PASSWORD= '@zureP@ssw0rd$$'
-#      - MSSQL_PORT= '1433'
-#      - LOGGING= false
-#      - MSSQLCP_HOST= '192.168.15.34'
-#      - MSSQLCP_DATABASE= 'CustomerPortal'
-#      - MSSQLCP_USERNAME= 'devsa'
-#      - MSSQLCP_PASSWORD= '@zureP@ssw0rd$$'
-#      - MSSQLCP_PORT= '1433'      
-#      - FTP_HOST= next3plcpftp.blob.core.windows.net
-#      - MSSQL_TEST= '192.168.15.34'
-#      - MSSQL_DATABASE_TEST= 'n3pl_ftp_importer'
-#      - scheduledTime= '*/1 * * * *'
-#      - SEND_FILE_TO_IMPORT_RABBITQ_CONN= 'amqp://localhost:5672'
-#      - SEND_FILE_TO_IMPORT_RABBITQ_NAME= 'file-to-import'
-#      - HTTP = http://localhost:3001/api/ftp/fileImporter
-#      - TZ=Australia/Sydney
-
-#  fileprocess:    
-#    image: next3pl.azurecr.io/next3pl-ftp-processor:V1.0.1-ir
-#    ports: 
-#      - 3384:3002
-#    networks:
-#      coreapp_subnet:
-#        ipv4_address: 172.33.1.25
-#    volumes:
-#      - /volume1/docker/irconfig:/irconfig
-#    environment:
-#      - MSSQL_HOST='192.168.15.34'
-#      - MSSQL_DATABASE= 'n3pl_ftp_importer'
-#      - MSSQL_USERNAME= 'devsa'
-#      - MSSQL_PASSWORD= '@zureP@ssw0rd$$'
-#      - MSSQL_PORT= '1433'
-#      - LOGGING= false
-#      - MSSQLCP_HOST= '192.168.15.34'
-#      - MSSQLCP_DATABASE= 'CustomerPortal'
-#      - MSSQLCP_USERNAME= 'devsa'
-#      - MSSQLCP_PASSWORD= '@zureP@ssw0rd$$'
-#      - MSSQLCP_PORT= '1433'      
-#      - FTP_HOST= next3plcpftp.blob.core.windows.net
-#      - MSSQL_TEST= '192.168.15.34'
-#      - MSSQL_DATABASE_TEST= 'n3pl_ftp_importer'
-#      - scheduledTime= '*/10 * * * *'
-#      - SEND_FILE_TO_IMPORT_RABBITQ_CONN= 'amqp://localhost:5672'
-#      - SEND_FILE_TO_IMPORT_RABBITQ_NAME= 'file-to-import'
-#      - HTTP = http://localhost:43842/api/mq/readmessages
-#      - TZ=Australia/Sydney
-
-#  ir:
-#    image: next3pl.azurecr.io/importerreporter:V1.0.0-ir
-#    ports:
-#      - '3385:4200'
-#    networks:
-#      coreapp_subnet:
-#        ipv4_address: 172.33.1.26
-#    volumes:
-#      - /volume1/docker/irconfig:/irconfig
-#    environment:
-#        - TZ=Australia/Sydney
-
-#  irrabbit:
-#    image: rabbitmq:3-management
-#    ports:
-#      - '15672:15672'   
-#      - '5672:5672'
-#    networks:
-#      coreapp_subnet:
-#        ipv4_address: 172.33.1.27
-#    environment:
-#        - TZ=Australia/Sydney
-  
 
 networks:
  coreapp_subnet:
